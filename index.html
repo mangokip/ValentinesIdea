@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: pink;
+        }
+        #prompt {
+            font-size: 24px;
+            margin-top: 50px;
+        }
+        #game-container {
+            display: none;
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 50px auto;
+            border: 2px solid #000;
+            background-color: lightyellow;
+        }
+        .monkey {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+        }
+        #feminine-monkey {
+            left: 10px;
+            top: 125px;
+            background: url('https://via.placeholder.com/50/ff69b4/000000?text=♀') no-repeat center;
+            background-size: cover;
+        }
+        #masculine-monkey {
+            right: 10px;
+            top: 125px;
+            background: url('https://via.placeholder.com/50/0000ff/ffffff?text=♂') no-repeat center;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+    <div id="prompt">Will you be my Valentine? ❤️</div>
+    <button onclick="startGame()">Yes!</button>
+    
+    <div id="game-container">
+        <div id="feminine-monkey" class="monkey"></div>
+        <div id="masculine-monkey" class="monkey"></div>
+    </div>
+    <div id="success-message" style="display:none; font-size:24px; margin-top:20px;">Yay! ❤️</div>
+    
+    <script>
+        function startGame() {
+            document.getElementById('prompt').style.display = 'none';
+            document.querySelector('button').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+        }
+        
+        document.addEventListener('keydown', function(event) {
+            let monkey = document.getElementById('feminine-monkey');
+            let left = parseInt(window.getComputedStyle(monkey).left);
+            if (event.key === 'ArrowRight') {
+                monkey.style.left = left + 10 + 'px';
+                checkWin();
+            }
+        });
+        
+        function checkWin() {
+            let monkey = document.getElementById('feminine-monkey');
+            let target = document.getElementById('masculine-monkey');
+            let monkeyLeft = parseInt(window.getComputedStyle(monkey).left);
+            let targetLeft = parseInt(window.getComputedStyle(target).left);
+            if (monkeyLeft >= targetLeft - 10) {
+                document.getElementById('game-container').style.display = 'none';
+                document.getElementById('success-message').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
