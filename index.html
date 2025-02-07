@@ -31,13 +31,13 @@
         #feminine-monkey {
             left: 10px;
             top: 125px;
-            background: url('https://via.placeholder.com/50/ff69b4/000000?text=♀') no-repeat center;
+            background: url('docs/salsa.png') no-repeat center;
             background-size: cover;
         }
         #masculine-monkey {
             right: 10px;
             top: 125px;
-            background: url('https://via.placeholder.com/50/0000ff/ffffff?text=♂') no-repeat center;
+            background: url('docs/samba.jpg') no-repeat center;
             background-size: cover;
         }
     </style>
@@ -57,13 +57,16 @@
             document.getElementById('prompt').style.display = 'none';
             document.querySelector('button').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
+            console.log("Game started");
         }
         
         document.addEventListener('keydown', function(event) {
             let monkey = document.getElementById('feminine-monkey');
             let left = parseInt(window.getComputedStyle(monkey).left);
             if (event.key === 'ArrowRight') {
-                monkey.style.left = left + 10 + 'px';
+                if (left + 10 < 250) { // Prevent moving out of bounds
+                    monkey.style.left = left + 10 + 'px';
+                }
                 checkWin();
             }
         });
@@ -73,11 +76,11 @@
             let target = document.getElementById('masculine-monkey');
             let monkeyLeft = parseInt(window.getComputedStyle(monkey).left);
             let targetLeft = parseInt(window.getComputedStyle(target).left);
-            if (monkeyLeft >= targetLeft - 10) {
+            if (monkeyLeft >= targetLeft - 50) { // Adjusted threshold for accuracy
                 document.getElementById('game-container').style.display = 'none';
                 document.getElementById('success-message').style.display = 'block';
             }
         }
     </script>
-</body> 
+</body>
 </html>
