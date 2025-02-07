@@ -28,17 +28,23 @@
             height: 50px;
             position: absolute;
         }
+        #masculine-monkey {
+            left: 250px;
+            top: 250px;
+            background: url('docs/samba.jpg') no-repeat center;
+            background-size: cover;
+        }
         #feminine-monkey {
             left: 10px;
-            top: 125px;
+            top: 10px;
             background: url('docs/salsa.png') no-repeat center;
             background-size: cover;
         }
-        #masculine-monkey {
-            right: 10px;
-            top: 125px;
-            background: url('docs/samba.jpg') no-repeat center;
-            background-size: cover;
+        .wall {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: brown;
         }
     </style>
 </head>
@@ -47,36 +53,65 @@
     <button onclick="startGame()">Yes!</button>
     
     <div id="game-container">
-        <div id="feminine-monkey" class="monkey"></div>
         <div id="masculine-monkey" class="monkey"></div>
+        <div id="feminine-monkey" class="monkey"></div>
+        <!-- Maze walls -->
+        <div class="wall" style="left: 50px; top: 50px;"></div>
+        <div class="wall" style="left: 100px; top: 50px;"></div>
+        <div class="wall" style="left: 150px; top: 50px;"></div>
+        <div class="wall" style="left: 50px; top: 100px;"></div>
+        <div class="wall" style="left: 150px; top: 150px;"></div>
     </div>
-    <div id="success-message" style="display:none; font-size:24px; margin-top:20px;">Yay! ❤️</div>
+    <div id="success-message" style="display:none; font-size:24px; margin-top:20px;">I love you so much Cait. Happy Valentines! ❤️</div>
     
     <script>
         function startGame() {
             document.getElementById('prompt').style.display = 'none';
             document.querySelector('button').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
-            console.log("Game started");
         }
         
         document.addEventListener('keydown', function(event) {
             let monkey = document.getElementById('feminine-monkey');
             let left = parseInt(window.getComputedStyle(monkey).left);
-            if (event.key === 'ArrowRight') {
-                if (left + 10 < 250) { // Prevent moving out of bounds
-                    monkey.style.left = left + 10 + 'px';
-                }
+            let top = parseInt(window.getComputedStyle(monkey).top);
+            let moveAmount = 10;
+            
+            let newLeft = left;
+            let newTop = top;
+            
+            if (event.key === 'ArrowLeft' && left > 0) newLeft -= moveAmount;
+            if (event.key === 'ArrowRight' && left < 250) newLeft += moveAmount;
+            if (event.key === 'ArrowUp' && top > 0) newTop -= moveAmount;
+            if (event.key === 'ArrowDown' && top < 250) newTop += moveAmount;
+            
+            if (!isColliding(newLeft, newTop)) {
+                monkey.style.left = newLeft + 'px';
+                monkey.style.top = newTop + 'px';
                 checkWin();
             }
         });
+        
+        function isColliding(x, y) {
+            let walls = document.querySelectorAll('.wall');
+            for (let wall of walls) {
+                let wallRect = wall.getBoundingClientRect();
+                if (x >= wallRect.left - 10 && x <= wallRect.right - 10 &&
+                    y >= wallRect.top - 10 && y <= wallRect.bottom - 10) {
+                    return true;
+                }
+            }
+            return false;
+        }
         
         function checkWin() {
             let monkey = document.getElementById('feminine-monkey');
             let target = document.getElementById('masculine-monkey');
             let monkeyLeft = parseInt(window.getComputedStyle(monkey).left);
+            let monkeyTop = parseInt(window.getComputedStyle(monkey).top);
             let targetLeft = parseInt(window.getComputedStyle(target).left);
-            if (monkeyLeft >= targetLeft - 50) { // Adjusted threshold for accuracy
+            let targetTop = parseInt(window.getComputedStyle(target).top);
+            if (Math.abs(monkeyLeft - targetLeft) < 10 && Math.abs(monkeyTop - targetTop) < 10) {
                 document.getElementById('game-container').style.display = 'none';
                 document.getElementById('success-message').style.display = 'block';
             }
