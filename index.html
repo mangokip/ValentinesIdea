@@ -17,8 +17,6 @@
         #game-container {
             display: none;
             position: relative;
-            width: 350px;
-            height: 350px;
             margin: 50px auto;
             border: 2px solid #000;
             background-color: lightyellow;
@@ -75,7 +73,6 @@
                     }
                 }
             }
-            // Ensure the bottom-right corner is open
             maze[rows - 1][cols - 1] = 0;
         }
 
@@ -102,6 +99,8 @@
         function drawMaze() {
             const gameContainer = document.getElementById("game-container");
             gameContainer.innerHTML = '';
+            gameContainer.style.width = `${cols * 50}px`;
+            gameContainer.style.height = `${rows * 50}px`;
 
             for (let i = 0; i < rows; i++) {
                 for (let j = 0; j < cols; j++) {
@@ -134,14 +133,37 @@
             document.getElementById('prompt').style.display = 'none';
             document.querySelector('button').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
-            document.getElementById('game-container').style.width = `${cols * 50}px`;
-            document.getElementById('game-container').style.height = `${rows * 50}px`;
-            
             do {
                 generateMaze();
             } while (!isMazeSolvable());
-            
             drawMaze();
+        }
+
+        document.addEventListener('keydown', function(event) {
+            let monkey = document.getElementById('feminine-monkey');
+            let left = parseInt(monkey.style.left);
+            let top = parseInt(monkey.style.top);
+            let moveAmount = 50;
+            let newLeft = left;
+            let newTop = top;
+            if (event.key === 'ArrowLeft' && left > 0) newLeft -= moveAmount;
+            if (event.key === 'ArrowRight' && left < (cols - 1) * 50) newLeft += moveAmount;
+            if (event.key === 'ArrowUp' && top > 0) newTop -= moveAmount;
+            if (event.key === 'ArrowDown' && top < (rows - 1) * 50) newTop += moveAmount;
+            if (maze[newTop / 50][newLeft / 50] === 0) {
+                monkey.style.left = `${newLeft}px`;
+                monkey.style.top = `${newTop}px`;
+                checkWin();
+            }
+        });
+        
+        function checkWin() {
+            let monkey = document.getElementById('feminine-monkey');
+            let target = document.getElementById('masculine-monkey');
+            if (monkey.style.left === target.style.left && monkey.style.top === target.style.top) {
+                document.getElementById('game-container').style.display = 'none';
+                document.getElementById('success-message').style.display = 'block';
+            }
         }
     </script>
 </body>
